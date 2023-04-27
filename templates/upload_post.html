@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <div class="columns is-mobile has-text-centered">
+                <div class="column is-half is-offset-one-quarter">
+                    <div class="card">
+                        <div class="card-content">
+                            <form method="post" action="" role="form" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <h3 class="title is-3">Create a new post</h3>
+{#                                <div class="field">#}
+{#                                    <p class="control has-icons-left has-icons-right">#}
+{#                                        <label class="label is-medium">Image</label>#}
+{#                                        {{ form.picture }}#}
+{#                                    </p>#}
+{#                                </div>#}
+                                <div class="field">
+                                    <div class="file is-large is-boxed" style="justify-content: space-around">
+                                        <label class="file-label">
+{#                                            <input class="file-input" type="file" name="resume">#}
+                                            {{ form.picture }}
+                                            <span class="file-cta">
+                                                <span class="file-icon">
+                                                    <i class="material-icons">upload</i>
+                                                </span>
+                                                <span class="file-label">
+                                                    Choose file…
+                                                </span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <p class="control has-icons-left">
+                                        <label class="label is-medium">Caption</label>
+                                        {{ form.caption }}
+                                    </p>
+                                </div>
+                                <div class="field">
+                                    <p class="control has-icons-left">
+                                        <label class="label is-medium">Tags </label>
+                                        {{ form.tags }}
+                                    </p>
+                                </div>
+                                <div class="field">
+                                <p class="control">
+                                    <button type="submit" name="action" class="button is-link" style="width: 200px;">
+                                        Create post
+                                    </button>
+                                </p>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

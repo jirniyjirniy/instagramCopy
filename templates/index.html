@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <div class="columns is-mobile is-centered">
+                <div class="column is-half">
+                    {% for post in post_items %}
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image is-4by3">
+                                    <a href="{% url 'post_details' post.id %}">
+                                        <img src="{{ post.picture.url }}" alt="{{ post.picture.url }}">
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="media">
+                                    <div class="media-left">
+                                        <figure class="image is-48x48">
+                                            <img src="{{ post.user.profile.picture.url }}"
+                                                 alt="Placeholder image">
+                                        </figure>
+                                    </div>
+                                    <div class="media-content">
+                                        {% if post.user.profile.first_name == None and post.user.profile.last_name == None %}
+                                            <p class="subtitle is-4" style="font-weight: bold">
+                                                @{{ post.user.username }}</p>
+                                        {% else %}
+                                            <p class="title is-4">{{ post.user.profile.first_name }} {{ post.user.profile.last_name }}</p>
+                                            <p class="subtitle is-6">@{{ post.user.username }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="content">
+                                    {{ post.caption }}
+                                    <p>
+                                        {% for tag in post.tags.all %}
+                                            <a href="{{ tag.get_absolute_url }}">#{{ tag }}</a>
+                                        {% endfor %}
+                                    </p>
+                                    <time datetime="{{ post.posted|date:'Y-m-d\TH:i:s' }}">{{ post.posted|date:"H:i A - j M Y" }}</time>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
