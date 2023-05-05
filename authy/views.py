@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from django.shortcuts import render, redirect, get_object_or_404
 from authy.forms import SignupForm, ChangePasswordForm, EditProfileForm
 from django.contrib.auth.models import User
@@ -10,30 +11,10 @@ from post.models import Post, Follow, Stream
 from django.db import transaction
 from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
-
+from django.urls import reverse, resolve
 from django.core.paginator import Paginator
 
-from django.urls import resolve
 
-
-def index(request):
-    return render(request, 'index.html')
-
-
-def post_detail(request):
-    return render(request, 'post_detail.html')
-
-
-def tag(request):
-    return render(request, 'tag.html')
-
-
-def profile(request):
-    return render(request, 'profile.html')
-
-
-# Create your views here.
 def UserProfile(request, username):
     user = get_object_or_404(User, username=username)
     profile = Profile.objects.get(user=user)
@@ -41,17 +22,22 @@ def UserProfile(request, username):
 
     if url_name == 'profile':
         posts = Post.objects.filter(user=user).order_by('-posted')
-
     else:
         posts = profile.favorites.all()
 
-    # Profile info box
+    # Profile info
     posts_count = Post.objects.filter(user=user).count()
     following_count = Follow.objects.filter(follower=user).count()
     followers_count = Follow.objects.filter(following=user).count()
 
-    # follow status
+    # Follow status
     follow_status = Follow.objects.filter(following=user, follower=request.user).exists()
+
+    # Posts likes
+    if posts.exists():
+        posts_likes = posts.aggregate(Sum('likes'))['likes__sum']
+    else:
+        posts_likes = 0
 
     # Pagination
     paginator = Paginator(posts, 8)
@@ -63,11 +49,12 @@ def UserProfile(request, username):
     context = {
         'posts': posts_paginator,
         'profile': profile,
+        'url_name': url_name,
+        'posts_count': posts_count,
         'following_count': following_count,
         'followers_count': followers_count,
-        'posts_count': posts_count,
         'follow_status': follow_status,
-        'url_name': url_name,
+        'posts_likes': posts_likes
     }
 
     return render(request, 'profile.html', context)

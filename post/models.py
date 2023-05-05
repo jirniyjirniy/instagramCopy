@@ -70,4 +70,16 @@ class Stream(models.Model):
             stream.save()
 
 
+class Likes(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_like')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_likes')
+
+    def __str__(self):
+        return f'{self.user} like {self.post}'
+
+
+    class Meta:
+        verbose_name_plural='Likes'
+        verbose_name = 'Like'
+
 post_save.connect(Stream.add_post, sender=Post)

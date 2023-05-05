@@ -50,8 +50,8 @@
                 <i class="material-icons">message</i>
                 Direct
             </a>
-            <a class="navbar-item">
-                <i class="material-icons">face</i>
+            <a class="navbar-item" href="{% url 'profile' request.user %}">
+                <i class="material-icons">person</i>
                 Profile
             </a>
             <a class="navbar-item" href="{% url 'upload_post' %}">
@@ -75,7 +75,7 @@
                         Report and issue
                     </a>
                     <hr class="navbar-divider">
-                    <a class="navbar-item">
+                    <a class="navbar-item" href="{% url 'logout' %}">
                         Log Out
                     </a>
                 </div>
