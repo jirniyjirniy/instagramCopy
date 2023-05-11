@@ -5,7 +5,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 
 from authy.models import Profile
+from comment.models import Comment
 from post.forms import PostForm
+from comment.forms import CommentForm
 from post.models import Post, Stream, Tag, Likes
 
 
@@ -72,12 +74,27 @@ def post_details(request, post_id):
     liked = Likes.objects.filter(user=user, post=post).exists()
     favorite_post = Profile.objects.get(user=user).favorites.filter(id=post_id).exists()
 
+    comments = Comment.objects.filter(post=post).order_by('date')
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.user = user
+            comment.save()
+            return HttpResponseRedirect(reverse('post_details', args=[post_id]))
+    else:
+        form = CommentForm()
+
     context = {
         'post': post,
         'user_obj': user_obj,
         'post_id': post_id,
         'liked': liked,
-        'favorite_post': favorite_post
+        'favorite_post': favorite_post,
+        'comments': comments,
+        'form': form,
     }
 
     return HttpResponse(template.render(context, request))

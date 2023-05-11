@@ -8,7 +8,12 @@
             <article class="media">
                 <div class="media-left">
                     <figure class="image is-256x256">
-                        <img class="is-rounded" src="https://bulma.io/images/placeholders/256x256.png">
+                        {% if profile.picture %}
+                            <img style="width: 190px; height: 190px;" class="is-rounded"
+                                 src="{{ profile.picture.url }}">
+                        {% else %}
+                            <img class="is-rounded" src="https://bulma.io/images/placeholders/256x256.png">
+                        {% endif %}
                     </figure>
                 </div>
                 <div class="media-content">
@@ -20,15 +25,17 @@
                     {% if profile.profile_info != None %}
                         <p class="subtitle is-5">{{ profile.profile_info }}</p>
                     {% endif %}
-{#                    <button class="button is-link" style="width: 200px">Edit Profile</button>#}
+                    {% if user.is_authenticated and user == profile.user %}
+                        <a href="{% url 'edit-profile' %}" class="button is-link" style="width: 200px">Edit Profile</a>
+                    {% endif %}
                     {% if user.is_authenticated and user != profile.user %}
                         {% if follow_status == True %}
                             <a href="{% url 'follow' profile.user 0 %}" class="button is-dark" style="width: 200px">
-                                    Un Follow
+                                Un Follow
                             </a>
                         {% else %}
                             <a href="{% url 'follow' profile.user 1 %}" class="button is-danger" style="width: 200px">
-                                    Follow
+                                Follow
                             </a>
                         {% endif %}
                     {% endif %}
@@ -89,6 +96,13 @@
                                                                                 alt="Image"></a>
                             </figure>
                         </div>
+                    </div>
+                {% empty %}
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <i class="material-icons" style="font-size: 150px">image_not_supported</i>
+                        <h1 style="font-size: 50px; margin: 0; font-style: italic    ">
+                            No images :(
+                        </h1>
                     </div>
                 {% endfor %}
             </div>

@@ -136,18 +136,25 @@ def PasswordChangeDone(request):
 @login_required
 def EditProfile(request):
     user = request.user.id
+    user_info = Profile.objects.filter(user=user)
     profile = Profile.objects.get(user__id=user)
     BASE_WIDTH = 400
 
     if request.method == 'POST':
         form = EditProfileForm(request.POST, request.FILES)
         if form.is_valid():
-            profile.picture = form.cleaned_data.get('picture')
-            profile.first_name = form.cleaned_data.get('first_name')
-            profile.last_name = form.cleaned_data.get('last_name')
-            profile.location = form.cleaned_data.get('location')
-            profile.url = form.cleaned_data.get('url')
-            profile.profile_info = form.cleaned_data.get('profile_info')
+            if form.cleaned_data.get('picture'):
+                profile.picture = form.cleaned_data.get('picture')
+            if form.cleaned_data.get('first_name'):
+                profile.first_name = form.cleaned_data.get('first_name')
+            if form.cleaned_data.get('last_name'):
+                profile.last_name = form.cleaned_data.get('last_name')
+            if form.cleaned_data.get('location'):
+                profile.location = form.cleaned_data.get('location')
+            if form.cleaned_data.get('url'):
+                profile.url = form.cleaned_data.get('url')
+            if form.cleaned_data.get('profile_info'):
+                profile.profile_info = form.cleaned_data.get('profile_info')
             profile.save()
             return redirect('index')
     else:
@@ -155,9 +162,10 @@ def EditProfile(request):
 
     context = {
         'form': form,
+        'user_info': user_info,
     }
 
-    return render(request, 'edit_profile.html', context)
+    return render(request, 'profile_edit.html', context)
 
 
 @login_required

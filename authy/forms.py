@@ -100,12 +100,37 @@ class ChangePasswordForm(forms.ModelForm):
 
 
 class EditProfileForm(forms.ModelForm):
-    picture = forms.ImageField(required=False)
-    first_name = forms.CharField(widget=forms.TextInput(), max_length=50, required=False)
-    last_name = forms.CharField(widget=forms.TextInput(), max_length=50, required=False)
-    location = forms.CharField(widget=forms.TextInput(), max_length=25, required=False)
-    url = forms.URLField(widget=forms.TextInput(), max_length=60, required=False)
-    profile_info = forms.CharField(widget=forms.TextInput(), max_length=260, required=False)
+    picture = forms.ImageField(required=True, widget=forms.FileInput(attrs={
+        'class': 'file-input',
+        'type': 'file',
+        'name': 'resume'
+    }))
+    first_name = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'type': 'text',
+        'placeholder': 'Enter first name'
+    }), max_length=50, required=False)
+    last_name = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'type': 'text',
+        'placeholder': 'Enter last name'
+    }), max_length=50, required=False)
+    location = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'type': 'text',
+        'placeholder': 'Enter location'
+    }), max_length=25, required=False)
+    url = forms.URLField(widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'type': 'text',
+        'placeholder': 'Enter url'
+    }), max_length=60, required=False)
+    profile_info = forms.CharField(widget=forms.Textarea(attrs={
+        'class': 'form-control',
+        'type': 'text',
+        'placeholder': 'Enter information',
+        'rows': '3'
+    }), max_length=260, required=False)
 
     class Meta:
         model = Profile

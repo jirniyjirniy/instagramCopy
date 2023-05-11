@@ -38,7 +38,7 @@
                                 {% endfor %}
                             </p>
                             <time datetime="{{ post.posted|date:'Y-m-d\TH:i:s' }}"
-                                  style="margin-left: 80%; font-size: medium">{{ post.posted|date:"H:i A - j M Y" }}</time>
+                                  style="font-size: medium">{{ post.posted|date:"H:i A - j M Y" }}</time>
                         </div>
                         <div class="media-right">
                             <a href="{% url 'post_like' post_id %}">
@@ -66,7 +66,41 @@
                     </div>
                 </div>
             </div>
-            <br>
+
+
+            {% for comment in comments %}
+                <article class="media">
+                    <figure class="media-left">
+                        <p class="image is-64x64" style="margin-top: 15px">
+                            <img src="{{ comment.user.profile.picture.url }}" alt="Placeholder image">
+                        </p>
+                    </figure>
+
+                    <div class="media-content">
+                        <div class="content">
+                            <p>
+                                {% if comment.user.profile.first_name == None and comment.user.profile.last_name == None %}
+                                    <a href="{% url 'profile' post.user.profile.user %}">
+                                        <p class="title is-4" style="font-weight: bold; margin-top: 30px; margin-bottom: 5px">
+                                            @{{ comment.user.username }}
+                                        </p>
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'profile' comment.user.profile.user %}">
+                                        <p class="title is-4"
+                                           style="font-weight: bold; margin-bottom: 1px" >{{ comment.user.profile.first_name }} {{ comment.user.profile.last_name }}</p>
+                                        <p class="title is-6">@{{ comment.user.username }}</p>
+                                    </a>
+                                {% endif %}
+                                <strong>{{ comment.comment }}</strong>
+                                <br>
+                                <small class="title is-6">{{ comment.date|date:"H:i A - j M Y" }}</small>
+                            </p>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+
             <article class="media">
                 <figure class="media-left">
                     <p class="image is-64x64">
@@ -74,16 +108,19 @@
                     </p>
                 </figure>
                 <div class="media-content">
-                    <div class="field">
-                        <p class="control">
-                            <textarea class="textarea" placeholder="Add a comment..."></textarea>
-                        </p>
-                    </div>
-                    <div class="field">
-                        <p class="control">
-                            <button class="button">Post comment</button>
-                        </p>
-                    </div>
+                    <form method="post" action="" role="form">
+                        {% csrf_token %}
+                        <div class="field">
+                            <p class="control">
+                                {{ form.comment }}
+                            </p>
+                        </div>
+                        <div class="field">
+                            <p class="control">
+                                <button class="button">Post comment</button>
+                            </p>
+                        </div>
+                    </form>
                 </div>
             </article>
         </div>

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static '/css/style.css ' %}">
     <link rel="stylesheet" href="{% static '/sass/grid/columns.sass' %}">
     <link rel="stylesheet" href="{% static '/sass/utilities/_all.sass' %}">
+    <link rel="stylesheet" href="{% static '/css/boots.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons"
           rel="stylesheet">
 </head>
@@ -46,7 +47,7 @@
                 Notifications
             </a>
 
-            <a class="navbar-item">
+            <a class="navbar-item" href="{% url 'direct' %}">
                 <i class="material-icons">message</i>
                 Direct
             </a>

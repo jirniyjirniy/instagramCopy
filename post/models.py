@@ -44,7 +44,7 @@ class Post(models.Model):
         return reverse('post_details', args=[str(self.id)])
 
     def __str__(self):
-        return self.user.username
+        return f'{self.user.username} - {self.id}'
 
 
 class Follow(models.Model):
