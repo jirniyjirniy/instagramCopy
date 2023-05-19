@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="columns is-mobile">
+        <div class="column is-one-quarter">
+
+            <aside class="menu">
+                <h1 class="title is-2">
+                    Messages
+                </h1>
+                <ul class="menu-list" style="overflow-y: scroll; height: 650px; padding-right: 20px">
+                    {% for message in messages %}
+                        <a class="{% if active_direct == message.user.username %}is-active{% endif %}" href="{% url 'directs' message.user.username %}">
+                            <div class="box">
+                                <article class="media">
+                                    <div class="media-left">
+                                        <figure class="image is-64x64">
+                                            <img class="" src="{{ message.user.profile.picture.url }}"
+                                                 alt="Image">
+                                        </figure>
+                                    </div>
+                                    <div class="media-content">
+                                        <div class="content">
+                                            <p>
+                                                {% if message.user.profile.first_name == None and message.user.profile.last_name == None %}
+                                                    <strong>@{{ message.user.username }}</strong>
+                                                {% else %}
+                                                    <strong>{{ message.user.profile.first_name }} {{ message.user.profile.last_name }}</strong>
+                                                    <small>@{{ message.user.username }}</small>
+                                                {% endif %}
+                                            </p>
+                                        </div>
+{#                                    <div class="content">#}
+{#                                        {% if message.unread %}#}
+{#                                            <p style="font-weight: bold; color: red;">#}
+{#                                                <i content="material-icons">mark_chat_unread</i>#}
+{#                                            </p>#}
+{#                                        {% endif %}#}
+{#                                    </div>#}
+                                    </div>
+                                </article>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </ul>
+            </aside>
+            <a class="button is-link" style="margin-top: 20px">New message</a>
+        </div>
+        <div class="column" style="margin-top: 5%">
+            {% for direct in directs %}
+                <div class="box">
+                    <article class="media">
+                        <figure class="media-left">
+                            <p class="image is-64x64" style="margin-top: 15px">
+                                <img src="{{ direct.sender.profile.picture.url }}"
+                                     alt="Placeholder image">
+                            </p>
+                        </figure>
+                        <div class="media-left">
+
+                        </div>
+                        <div class="media-content">
+                            <div class="content">
+                                <p>
+                                    {% if direct.sender.profile.first_name == None and direct.sender.profile.last_name == None %}
+                                        <strong>@{{ direct.sender.profile.user }}</strong>
+                                        <small class="title is-6"> {{ direct.date| date:"H:i A - j M Y" }}</small>
+                                    {% else %}
+                                        <strong>{{ direct.sender.profile.first_name }} {{ direct.sender.profile.last_name }}</strong>
+                                        <small class="title is-6">@{{ direct.sender.profile.user }}</small>
+                                        <small class="title is-6"> {{ direct.date| date:"H:i A - j M Y" }}</small>
+                                    {% endif %}
+                                </p>
+                                {{ direct.body }}
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            {% endfor %}
+
+            <form role="form" method="POST" action="{% url 'send_direct_message' %}">
+                {% csrf_token %}
+                <article class="media">
+                    <figure class="media-left">
+                        <p class="image is-64x64">
+                            <img src="{{ request.user.profile.picture.url }}">
+                        </p>
+                    </figure>
+                    <div class="media-content">
+                        <input type="hidden" name="to_user" value="{{ active_direct }}">
+                        <div class="field">
+                            <p class="control">
+                                <textarea class="textarea" name="body" placeholder="Add a message..."></textarea>
+                            </p>
+                        </div>
+                        <nav class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <button type="submit" name="action" class="button is-info">Send</button>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </article>
+            </form>
+        </div>
+    </div>
+{% endblock %}

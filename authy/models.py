@@ -13,7 +13,7 @@ class Profile(models.Model):
     url = models.CharField(max_length=80, null=True, blank=True)
     profile_info = models.TextField(max_length=150, null=True, blank=True)
     created = models.DateField(auto_now_add=True)
-    favorites = models.ManyToManyField(Post, blank=True, null=True)
+    favorites = models.ManyToManyField(Post, blank=True)
     picture = models.ImageField(upload_to='profile_pictures', blank=True, null=True, verbose_name='Picture', default='default-avatar-photo.jpg')
 
     def __str__(self):
