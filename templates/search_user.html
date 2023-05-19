@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="columns is-mobile is-centered" style="margin-bottom: 30px">
+        <div class="column is-half">
+            <form>
+                <div class="field is-grouped">
+                    <p class="control is-expanded">
+                        <input class="input" name="q" type="text" placeholder="Search a users..."
+                               value="{{ request.GET.q }}">
+                    </p>
+                    <p class="control">
+                        <button type="submit" class="button is-info">
+                            Search
+                        </button>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="columns is-one-quarter">
+        {% for user in users %}
+            <div class="box">
+                <article class="media">
+                    <div class="media-left">
+                        <figure class="image is-128x128">
+                            <img src="{{ user.profile.picture.url }}" alt="Image">
+                        </figure>
+                    </div>
+                    <div class="media-content">
+                        <div class="content">
+                            <p>
+                                <a href="{% url 'profile' user.username %}"
+                                   style="text-decoration: none; color: black;">
+                                    {% if user.profile.first_name == None and user.profile.last_name == None %}
+                                        <strong class="title is-4">@{{ user.profile.user }}</strong>
+                                    {% else %}
+                                        <strong>{{ user.profile.first_name }} {{ user.profile.last_name }}</strong>
+                                        <br>
+                                        <small class="title is-6">@{{ user.profile.user }}</small>
+                                    {% endif %}
+                                    <br>
+                                </a>
+                            </p>
+                            <a href="{% url 'profile' user.username %}" class="button is-link">Send Message!</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

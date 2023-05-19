@@ -47,7 +47,7 @@
                 Notifications
             </a>
 
-            <a class="navbar-item" href="{% url 'direct' %}">
+            <a class="navbar-item" href="{% url 'inbox' %}">
                 <i class="material-icons">message</i>
                 Direct
             </a>
@@ -96,6 +96,10 @@
         {% endblock %}
     </div>
 </section>
+{% block scripts %}
+
+    <!-- Дополнительные скрипты -->
+{% endblock %}
 </body>
 </html>
 

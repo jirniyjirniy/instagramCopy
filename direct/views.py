@@ -1,11 +1,13 @@
-from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseBadRequest
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
-from django.template import loader
+from django.shortcuts import render, redirect
+from django.template import loader, RequestContext
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, JsonResponse
 from django.db.models import Q
+from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
-from .models import Message
+from direct.models import Message
+
 
 
 @login_required
@@ -31,8 +33,6 @@ def inbox(request):
 
     return render(request, 'direct.html', context)
 
-
-
 @login_required
 def directs(request, username):
     user = request.user
@@ -48,27 +48,69 @@ def directs(request, username):
         'directs': directs,
         'messages': messages,
         'active_direct': active_direct,
-        'user': user,
     }
 
-    return render(request, 'direct.html', context)
+    template = loader.get_template('direct.html')
+
+    return HttpResponse(template.render(context, request))
 
 
-def send_direct_message(request):
+
+
+@login_required
+def send_direct(request):
     from_user = request.user
-    print(from_user)
     to_user_username = request.POST.get('to_user')
-    print(to_user_username)
     body = request.POST.get('body')
-    print(body)
 
     if request.method == 'POST':
         to_user = User.objects.get(username=to_user_username)
         Message.send_message(from_user, to_user, body)
-        return redirect('direct')
+        return redirect('inbox')
     else:
         HttpResponseBadRequest()
 
 
-def notification(request):
-    return render(request, 'notifications.html')
+def check_directs(request):
+    directs_count = 0
+    if request.user.is_authenticated:
+        directs_count = Message.objects.filter(user=request.user, is_read=False).count()
+
+    return {'directs_count': directs_count}
+
+
+@login_required
+def search_user(request):
+    query = request.GET.get('q')
+    context = {}
+    all_users = User.objects.all()
+
+    if query:
+        users = User.objects.filter(Q(username__icontains=query))
+
+        paginator = Paginator(users, 6)
+        page_number = request.GET.get('page')
+        users_paginator = paginator.get_page(page_number)
+
+        context = {
+            'users': users_paginator,
+            'all_users': all_users,
+        }
+
+    template = loader.get_template('search_user.html')
+
+    return HttpResponse(template.render(context, request))
+
+
+# @login_required
+# def new_conversation(request, username):
+#     from_user = request.user
+#     body = 'Says Hello!'
+#
+#     try:
+#         to_user = User.objects.get(username=username)
+#     except Exception as e:
+#         return redirect('search_user')
+#     if from_user != to_user:
+#         Message.send_message(from_user, to_user, body)
+#     return redirect('inbox')

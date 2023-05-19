@@ -67,7 +67,7 @@
                                     <div class="media-content">
                                         <div class="content">
                                             {% if notification.sender.profile.first_name == None and notification.sender.profile.last_name == None %}
-                                                <a href="{% url 'profile' notification.sender.profile.user %}">
+                                                <a href="{% url 'profile' notification.sender.profile.user %}"
                                                    style="text-decoration: none;">
                                                     <p class="title is-4" style="font-weight: bold; margin-top: 12px">
                                                         @{{ notification.sender.username }}</p>

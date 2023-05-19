@@ -1,7 +1,6 @@
 from django.urls import path
 
 from post.views import index, new_post, post_details, tag_page, favorite, like
-from direct.views import inbox
 
 urlpatterns = [
     path('', index, name='index'),
